@@ -1,0 +1,577 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Moa Blocks</title>
+<meta name="theme-color" content="#CD2E3A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: Korean Fidget's brand system — iOS grouped background, white cards, system blue,
+   taegukgi red logo tile, Black Han Sans for Hangul, Pantone color per jamo. One column, phone first. */
+:root{
+  --bg:#F2F2F7; --surface:#FFFFFF; --surface2:#F7F7FA; --divider:#E5E5EA; --slot:#D1D1D6;
+  --text:#1C1C1E; --text-mid:#3A3A3C; --text-soft:#8E8E93;
+  --accent:#007AFF; --accent-soft:rgba(0,122,255,.10);
+  --red:#CD2E3A; --red-soft:rgba(205,46,58,.12); --danger:#FF3B30; --ok:#34C759;
+  --radius:18px; --shadow:0 1px 2px rgba(0,0,0,.05),0 6px 20px rgba(0,0,0,.05);
+  --font:-apple-system,BlinkMacSystemFont,system-ui,"Noto Sans KR",sans-serif;
+  --font-kr:"Black Han Sans","Noto Sans KR","Apple SD Gothic Neo",sans-serif;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px}
+.kr{font-family:var(--font-kr);font-weight:400;font-synthesis:none}
+.app{max-width:480px;margin:0 auto;padding-inline:16px;padding-block:14px 32px;display:flex;flex-direction:column;gap:10px}
+.card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow)}
+.eyebrow{font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-soft);font-weight:700}
+
+/* header — same lockup as Korean Fidget */
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-block:4px 2px}
+.lock{display:inline-flex;align-items:center;gap:11px}
+.tile{position:relative;width:46px;height:46px;border-radius:13px;background:var(--red);color:#fff;font-size:1.95rem;line-height:1;display:flex;align-items:center;justify-content:center;padding-top:4px;box-shadow:0 5px 14px rgba(205,46,58,.32);flex:none}
+.tile::after{position:absolute;bottom:-7px;right:-9px;font-size:1.15rem;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))}
+.tile.moa::after{content:'🧩'} .tile.fid::after{content:'👆'}
+.name{font-size:1.75rem;font-weight:800;letter-spacing:-.04em;line-height:1;white-space:nowrap}
+.name .b{color:var(--accent)}
+.name .b .l{display:inline-block;animation:settle 3.2s ease-in-out infinite}
+.name .b .l:nth-child(2){animation-delay:.1s}.name .b .l:nth-child(3){animation-delay:.2s}.name .b .l:nth-child(4){animation-delay:.3s}.name .b .l:nth-child(5){animation-delay:.4s}.name .b .l:nth-child(6){animation-delay:.5s}
+.sub{font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-soft);font-weight:700;margin-top:5px}
+.tools{display:flex;gap:6px}
+.ibtn{width:38px;height:38px;border-radius:50%;border:0;background:var(--surface);box-shadow:var(--shadow);display:grid;place-items:center;color:var(--text-mid)}
+.ibtn svg{width:17px;height:17px}
+.ibtn[disabled]{opacity:.35;cursor:default}
+
+.hud{display:grid;grid-template-columns:repeat(4,1fr);padding:10px 6px}
+.stat{display:flex;flex-direction:column;align-items:center;gap:3px;border-left:1px solid var(--divider)}
+.stat:first-child{border-left:0}
+.stat b{font-size:1.05rem;font-weight:700;font-variant-numeric:tabular-nums}
+.pips{display:flex;gap:3px;height:20px;align-items:center}
+.pips i{width:6px;height:13px;border-radius:2px;background:var(--divider)}
+.pips i.on{background:var(--red)}
+
+.target{display:flex;gap:12px;align-items:center;padding:14px 14px 14px 16px}
+.target .meta{min-width:0;flex:1;display:flex;flex-direction:column;gap:3px}
+.meaning{font-size:1.35rem;font-weight:800;letter-spacing:-.02em;line-height:1.15;text-wrap:balance}
+.rr{font-size:.82rem;font-weight:600;color:var(--accent)}
+.listen{border:0;background:var(--accent);color:#fff;border-radius:50%;width:46px;height:46px;display:grid;place-items:center;flex:none;box-shadow:0 4px 12px rgba(0,122,255,.3)}
+.listen svg{width:20px;height:20px}
+.next{display:flex;flex-direction:column;align-items:center;gap:5px;flex:none}
+.next .row{display:flex;gap:4px}
+.mini{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:1.3rem;line-height:1;padding-top:2px}
+.mini + .mini{opacity:.55;transform:scale(.85)}
+
+.msg{min-height:20px;font-size:.8rem;font-weight:500;color:var(--text-soft);text-align:center;text-wrap:balance}
+.msg.bad{color:var(--danger)} .msg.good{color:#248A3D}
+
+.wellWrap{position:relative;display:flex;justify-content:center}
+.well{position:relative;background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.lane{position:absolute;top:0;bottom:0;border-left:1px solid var(--divider);cursor:pointer}
+.lane:first-child{border-left:0}
+.lane.on{background:var(--accent-soft)}
+.lane.trash{background:var(--surface2)}
+.lane.trash.on{background:rgba(142,142,147,.16)}
+.cell{position:absolute;background:var(--surface2);border:1.5px solid var(--divider);border-radius:14px;transition:top .25s}
+.cell .inner{position:absolute;inset:12%}
+.slot{position:absolute;display:flex;align-items:center;justify-content:center;border:1.5px dashed var(--slot);border-radius:6px;line-height:1}
+.slot.filled{border-color:transparent}
+.slot.filled span{animation:drop .18s ease-out}
+.glyph{position:absolute;inset:0;display:grid;place-items:center;line-height:1;padding-top:4%}
+.cell.done{background:var(--surface);border-width:2px}
+.cell.done .glyph{animation:pop .35s ease-out}
+.cell.err{animation:shake .35s;background:var(--red-soft)}
+.bin{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--text-soft);font-size:.58rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:1.5px dashed var(--slot);border-radius:14px;transition:top .25s}
+.bin svg{width:22px;height:22px}
+.bin.flash{border-color:var(--ok);color:#248A3D}
+.garbage{position:absolute;left:0;right:0;bottom:0;background:repeating-linear-gradient(135deg,var(--red-soft) 0 8px,var(--surface) 8px 16px);border-top:2px solid var(--red);transition:height .25s}
+.piece{position:absolute;left:0;top:0;display:grid;place-items:center;line-height:1;transition:transform .08s linear;box-shadow:0 3px 10px rgba(0,0,0,.18);pointer-events:none}
+.piece .g{display:block;padding-top:6%}
+.piece .g.spin{animation:spin .16s ease-out}
+.piece .tag{position:absolute;left:0;right:0;font-family:var(--font);font-weight:700;font-size:.55rem;letter-spacing:.06em;text-transform:uppercase;text-align:center;opacity:.8}
+.piece.init .tag{top:4px} .piece.final .tag{bottom:4px}
+.piece.cons.init{box-shadow:inset 0 5px 0 rgba(255,255,255,.35),0 3px 10px rgba(0,0,0,.18)}
+.piece.cons.final{box-shadow:inset 0 -5px 0 rgba(0,0,0,.28),0 3px 10px rgba(0,0,0,.18)}
+
+.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:12px;background:rgba(242,242,247,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.dlg{background:var(--surface);border-radius:var(--radius);padding:20px 18px 16px;max-width:320px;width:100%;display:flex;flex-direction:column;gap:10px;box-shadow:0 12px 40px rgba(0,0,0,.18)}
+.dlg h2{margin:0;font-size:1.3rem;font-weight:800;letter-spacing:-.02em}
+.dlg p{margin:0;line-height:1.55;color:var(--text-mid);font-size:.82rem}
+.dlg ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:.8rem;line-height:1.5;color:var(--text-mid)}
+.primary{background:var(--accent);color:#fff;border:0;border-radius:14px;padding:13px 14px;font-weight:600;font-size:1rem}
+.ghost{background:var(--accent-soft);color:var(--accent);border:0;border-radius:14px;padding:13px 10px;font-weight:600;font-size:.95rem}
+.btns{display:flex;gap:8px;width:100%;margin-top:4px}
+.btns button{flex:1}
+.clear{text-align:center;align-items:center}
+.clear .ko{font-size:3rem;line-height:1.1;letter-spacing:.02em}
+.clear .en{font-size:1.05rem;font-weight:700}
+.clear .snd{font-size:.75rem;color:var(--text-soft)}
+
+.pad{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.pad button{border:0;background:var(--surface);box-shadow:var(--shadow);border-radius:14px;padding:11px 0 9px;font-weight:700;font-size:1.05rem;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text)}
+.pad button small{font-size:.55rem;font-weight:700;color:var(--text-soft);letter-spacing:.04em;text-transform:uppercase}
+.pad button:active{transform:scale(.96);background:var(--surface2)}
+.pad button.rot{color:var(--accent)} .pad button.disc{color:var(--red)}
+@media (hover:hover) and (pointer:fine){.pad{display:none}}
+
+.section{padding:14px 16px}
+.section h3{margin:0 0 8px}
+.words{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.words li + li{border-top:1px solid var(--divider)}
+.words button{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:baseline;background:none;border:0;padding:9px 0;text-align:left}
+.words .k{font-size:1.25rem}
+.words .e{color:var(--text-mid);font-size:.8rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.words .r{font-size:.72rem;color:var(--accent);font-weight:600}
+.empty{font-size:.78rem;color:var(--text-soft);line-height:1.5;margin:0}
+.sister{display:flex;align-items:center;gap:14px;padding:14px 16px;text-decoration:none;color:inherit}
+.sister .t{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
+.sister b{font-size:.95rem}
+.sister span{font-size:.75rem;color:var(--text-soft);line-height:1.4}
+.sister .go{color:var(--accent);font-weight:600;font-size:.85rem;flex:none}
+.promo{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:14px;background:var(--surface2);text-decoration:none;color:inherit;text-align:left}
+.promo .tile{width:30px;height:30px;font-size:1.2rem;border-radius:9px;box-shadow:none}
+.promo .tile::after{font-size:.8rem;bottom:-5px;right:-6px}
+.promo span{font-size:.75rem;line-height:1.4;color:var(--text-mid);flex:1}
+.promo b{color:var(--accent);font-weight:600}
+.sister .tile{width:40px;height:40px;font-size:1.65rem;border-radius:11px}
+
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:20}
+.sheet{position:fixed;z-index:21;left:50%;top:50%;transform:translate(-50%,-50%);width:min(380px,calc(100vw - 32px));max-height:calc(100% - 32px);overflow:auto;background:var(--bg);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:12px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.sheethead{display:flex;align-items:center;justify-content:space-between}
+.sheethead h2{margin:0;font-size:1.1rem;font-weight:800}
+.done-btn{border:0;background:none;color:var(--accent);font-weight:600;font-size:.95rem;padding:6px 2px}
+.group{background:var(--surface);border-radius:14px;display:flex;flex-direction:column}
+.group > *{padding:12px 14px}
+.group > * + *{border-top:1px solid var(--divider)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.9rem}
+.row select{font:inherit;font-size:.85rem;padding:6px 8px;border:1px solid var(--divider);border-radius:8px;background:var(--surface2);color:var(--text);max-width:58%}
+.row input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent)}
+.textbtn{border:0;background:none;color:var(--accent);font-weight:600;font-size:.9rem;text-align:left}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;font-size:.8rem;align-items:center;color:var(--text-mid)}
+.keys kbd{font-family:var(--font);font-size:.72rem;font-weight:700;border:1px solid var(--divider);border-bottom-width:2px;border-radius:6px;padding:2px 7px;justify-self:start;background:var(--surface2);color:var(--text)}
+.note{font-size:.72rem;color:var(--text-soft);line-height:1.5;margin:0}
+
+@keyframes settle{0%,78%,100%{transform:translateY(0)}84%{transform:translateY(-4px)}90%{transform:translateY(1px)}}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+@keyframes drop{0%{transform:translateY(-30%);opacity:0}100%{transform:none;opacity:1}}
+@keyframes spin{0%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="app">
+  <header>
+    <div class="lock">
+      <div class="tile moa kr">모</div>
+      <div>
+        <div class="name">Moa <span class="b"><span class="l">B</span><span class="l">l</span><span class="l">o</span><span class="l">c</span><span class="l">k</span><span class="l">s</span></span></div>
+        <div class="sub">Hangul block puzzle</div>
+      </div>
+    </div>
+    <div class="tools">
+      <button class="ibtn" id="pauseBtn" aria-label="Pause" disabled><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg></button>
+      <button class="ibtn" id="setBtn" aria-label="Options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+    </div>
+  </header>
+
+  <div class="card hud">
+    <div class="stat"><span class="eyebrow">Score</span><b id="score">0</b></div>
+    <div class="stat"><span class="eyebrow">Level</span><b id="level">1</b></div>
+    <div class="stat"><span class="eyebrow">Words</span><b id="count">0</b></div>
+    <div class="stat"><span class="eyebrow">Floor</span><div class="pips" id="pips"></div></div>
+  </div>
+
+  <div class="card target">
+    <div class="meta">
+      <span class="eyebrow" id="blocks">Build this word</span>
+      <span class="meaning" id="meaning" dir="auto">—</span>
+      <span class="rr" id="rr"></span>
+    </div>
+    <button class="listen" id="listen" aria-label="Listen to the word"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+    <div class="next"><span class="eyebrow">Next</span><div class="row" id="next"></div></div>
+  </div>
+
+  <div class="msg" id="msg" aria-live="polite"></div>
+  <div class="wellWrap" id="wrap">
+    <div class="well" id="well"></div>
+    <div class="overlay" id="overlay"></div>
+  </div>
+
+  <div class="pad" id="pad">
+    <button data-a="left" aria-label="Move left">◀<small>Left</small></button>
+    <button data-a="rot" class="rot" aria-label="Rotate">↻<small>Rotate</small></button>
+    <button data-a="right" aria-label="Move right">▶<small>Right</small></button>
+    <button data-a="down" aria-label="Move down">▼<small>Down</small></button>
+    <button data-a="drop" aria-label="Drop">⤓<small>Drop</small></button>
+    <button data-a="discard" class="disc" aria-label="Discard">✕<small>Discard</small></button>
+  </div>
+
+  <div class="card section">
+    <h3 class="eyebrow">Words you built</h3>
+    <ul class="words" id="words"></ul>
+    <p class="empty" id="wordsEmpty">Finished words collect here. Tap one to hear it again.</p>
+  </div>
+
+  <a class="card sister" href="https://korean-fidget.vercel.app/?ref=moa-home" target="_blank" rel="noopener">
+    <div class="tile fid kr">가</div>
+    <div class="t"><b>Write your own words</b><span>Moa gives you the words. Korean Fidget lets you build any word you want, hear it, and see what it means.</span></div>
+    <span class="go">Korean Fidget</span>
+  </a>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<div class="sheet" id="sheet" role="dialog" aria-label="Options" hidden>
+  <div class="sheethead"><h2>Options</h2><button class="done-btn" id="setClose">Done</button></div>
+  <div class="group">
+    <label class="row" for="opt-lang">Meaning in<select id="opt-lang"></select></label>
+    <label class="row" for="opt-rr">Romanization hint<input type="checkbox" id="opt-rr" checked></label>
+    <label class="row" for="opt-sfx">Click sounds<input type="checkbox" id="opt-sfx" checked></label>
+  </div>
+  <div class="group">
+    <label class="row" for="opt-voice">Korean voice<select id="opt-voice"><option value="">Device default</option></select></label>
+    <button class="textbtn" id="testVoice">Test this voice</button>
+    <p class="note" id="audioNote">For the most natural Korean on iPhone, download <b>Jian (Premium)</b>: Settings › Accessibility › Spoken Content › Voices › Korean. Moa uses it automatically once it's installed.</p>
+  </div>
+  <div class="group">
+    <div class="keys">
+      <kbd>← →</kbd><span>Move between blocks (or tap a column)</span>
+      <kbd>↑</kbd><span>Rotate. Vowels turn ㅏ→ㅜ→ㅓ→ㅗ. Consonants switch between first and final.</span>
+      <kbd>↓</kbd><span>Fall faster</span>
+      <kbd>Space</kbd><span>Drop now</span>
+      <kbd>C</kbd><span>Discard a decoy</span>
+      <kbd>P</kbd><span>Pause</span>
+    </div>
+  </div>
+</div>
+
+<script src="dict.js"></script>
+<script src="hangul.js"></script>
+<script src="sound.js"></script>
+<script>
+const H=window.Hangul, SFX=window.Sound, DICT=window.DICT||{};
+const $=s=>document.querySelector(s);
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+const LANGS=[['en','English'],['zh','中文'],['ja','日本語'],['es','Español'],['fr','Français'],['ru','Русский'],['pt','Português'],['ar','العربية'],['hi','हिन्दी'],['it','Italiano']];
+let lang=store.get('moa-lang')||'en';
+// Words whose spoken form differs from the spelling — shown after the word is built
+const PRON={'학교':'학꾜','꽃':'꼳','물고기':'물꼬기','국물':'궁물','한국어':'한구거','잎':'입'};
+
+const CONFUSE={'ㄱ':['ㅋ','ㄲ'],'ㅋ':['ㄱ'],'ㄲ':['ㄱ','ㅋ'],'ㄷ':['ㅌ','ㄸ'],'ㅌ':['ㄷ'],'ㅂ':['ㅍ','ㅃ'],'ㅍ':['ㅂ'],'ㅈ':['ㅊ','ㅉ'],'ㅊ':['ㅈ'],'ㅅ':['ㅆ','ㅈ'],'ㅆ':['ㅅ'],'ㄴ':['ㄹ','ㅁ'],'ㄹ':['ㄴ'],'ㅁ':['ㅂ','ㄴ'],'ㅇ':['ㅎ'],'ㅎ':['ㅇ'],
+ 'ㅏ':['ㅐ','ㅑ'],'ㅓ':['ㅔ','ㅕ'],'ㅗ':['ㅛ'],'ㅜ':['ㅠ'],'ㅡ':['ㅜ'],'ㅣ':['ㅐ'],'ㅐ':['ㅔ'],'ㅔ':['ㅐ'],'ㅑ':['ㅏ'],'ㅕ':['ㅓ'],'ㅛ':['ㅗ'],'ㅠ':['ㅜ']};
+
+/* ---------- word pool from the shared dictionary ---------- */
+const complex=w=>[...w].some(c=>{const d=H.decompose(c);return H.VOWEL_PARTS[d.jung]||H.JONG_PARTS[d.jong]});
+const POOL=Object.keys(DICT).filter(w=>w.length<=3&&[...w].every(H.isSyllable)).map(w=>({ko:w,len:w.length,hard:complex(w)}));
+
+const FALL_ROWS=8, MAXG=6;
+const S={running:false,paused:false,over:false,lock:false,score:0,cleared:0,garbage:0,word:null,cells:[],piece:null,queue:[],last:0,used:new Set(),collected:[]};
+const G={colW:90,rowH:44,cellS:84,tile:76};
+let lanes=[],pieceEl,garbageEl,binEl;
+
+const level=()=>1+Math.floor(S.cleared/4);
+const fallMs=()=>Math.max(260,1000-(level()-1)*100);
+const decoyRate=()=>Math.min(.4,.2+.03*level());
+const ncols=()=>S.word.ko.length+1;
+const trashCol=()=>S.word.ko.length;
+const fallRows=()=>FALL_ROWS-S.garbage;
+const meaningOf=w=>(DICT[w]&&(DICT[w][lang]||DICT[w].en))||'';
+
+function pickWord(){
+ const L=level();
+ const fits=w=>L===1?(w.len===1&&!w.hard):L===2?(w.len<=2&&!w.hard):L===3?!w.hard:true;
+ const pool=POOL.filter(fits);
+ let fresh=pool.filter(w=>!S.used.has(w.ko));
+ if(!fresh.length){pool.forEach(w=>S.used.delete(w.ko));fresh=pool}
+ const f2=fresh.filter(w=>!S.word||w.ko!==S.word.ko); if(f2.length)fresh=f2;
+ // from level 4, lean toward words with compound vowels or double finals
+ if(L>=4&&Math.random()<.5){const h=fresh.filter(w=>w.hard);if(h.length)fresh=h}
+ const w=rnd(fresh);S.used.add(w.ko);return{ko:w.ko,rr:H.romanize(w.ko),pron:PRON[w.ko]||null};
+}
+
+/* ---------- slot geometry: where each piece sits in a syllable block ---------- */
+function rects(roles){
+ const V=roles.has('jungV'),Hz=roles.has('jungH'),J=roles.has('jong1'),J2=roles.has('jong2');
+ const r={};let jb=null;
+ if(V&&Hz){if(J){r.cho=[0,0,60,38];r.jungH=[0,38,60,28];r.jungV=[60,0,40,66];jb=[8,68,84,32]}else{r.cho=[0,0,60,55];r.jungH=[0,55,60,45];r.jungV=[60,0,40,100]}}
+ else if(V){if(J){r.cho=[0,0,55,58];r.jungV=[55,0,45,58];jb=[8,60,84,40]}else{r.cho=[0,0,55,100];r.jungV=[55,0,45,100]}}
+ else{if(J){r.cho=[18,0,64,40];r.jungH=[0,40,100,28];jb=[8,68,84,32]}else{r.cho=[18,0,64,56];r.jungH=[0,56,100,44]}}
+ if(jb){if(J2){r.jong1=[jb[0],jb[1],jb[2]/2,jb[3]];r.jong2=[jb[0]+jb[2]/2,jb[1],jb[2]/2,jb[3]]}else r.jong1=jb}
+ return r;
+}
+
+/* ---------- pieces ---------- */
+function needs(){
+ const arr=[];S.cells.forEach(c=>c.slots.forEach(s=>{if(!s.filled)arr.push(s.j)}));
+ [S.piece,...S.queue].filter(p=>p&&p.base).forEach(p=>{const i=arr.indexOf(p.base);if(i>=0)arr.splice(i,1)});
+ return arr;
+}
+const mk=(ch,base)=>({ch,base,kind:H.CONS.has(ch)?'C':'V',mode:'init',col:0,row:0});
+function decoy(){
+ const T=new Set();S.cells.forEach(c=>c.slots.forEach(s=>T.add(s.j)));
+ const bad=d=>T.has(d)||(H.family(d)||[]).some(x=>T.has(x));
+ let c=[];T.forEach(j=>(CONFUSE[j]||[]).forEach(d=>c.push(d)));c=c.filter(d=>!bad(d));
+ if(!c.length)c=['ㅋ','ㅌ','ㅍ','ㅊ','ㅆ','ㅔ','ㅐ'].filter(d=>!bad(d));
+ if(!c.length)c=['ㅃ'];
+ return mk(rnd(c),null);
+}
+function gen(){
+ const n=needs();
+ if(!n.length||Math.random()<decoyRate())return decoy();
+ const b=rnd(n),f=H.family(b);return mk(f?rnd(f):b,b);
+}
+function paintTile(el,ch){const c=H.colorOf(ch);el.style.background=c;el.style.color=H.isLight(c)?'#000':'#fff'}
+
+/* ---------- board ---------- */
+function newWord(){
+ S.word=pickWord();
+ S.cells=[...S.word.ko].map(ch=>{const sl=H.pieces(ch).map(p=>({role:p.role,j:p.j,filled:null,el:null}));
+  return{ch,slots:sl,rect:rects(new Set(sl.map(s=>s.role))),done:false,el:null}});
+ S.piece=null;S.queue=[];
+ showTarget();build();spawn();
+}
+function showTarget(){
+ if(!S.word)return;
+ $('#meaning').textContent=meaningOf(S.word.ko)||'—';
+ $('#rr').textContent=S.word.rr;
+ const n=S.word.ko.length;$('#blocks').textContent=`Build this word · ${n} block${n>1?'s':''}`;
+}
+function build(){
+ const well=$('#well');well.innerHTML='';lanes=[];
+ for(let i=0;i<ncols();i++){const l=document.createElement('div');l.className='lane'+(i===trashCol()?' trash':'');
+  l.addEventListener('pointerdown',e=>{if(!S.running||S.paused||S.lock||!S.piece)return;e.preventDefault();
+   if(S.piece.col===i)act('rot');else{S.piece.col=i;SFX.click();drawPiece()}});
+  well.appendChild(l);lanes.push(l)}
+ S.cells.forEach(c=>{const el=document.createElement('div');el.className='cell';
+  const inner=document.createElement('div');inner.className='inner';
+  c.slots.forEach(s=>{const d=document.createElement('div');d.className='slot kr';d.innerHTML='<span></span>';inner.appendChild(d);s.el=d});
+  el.appendChild(inner);const g=document.createElement('div');g.className='glyph kr';g.hidden=true;el.appendChild(g);
+  well.appendChild(el);c.el=el});
+ binEl=document.createElement('div');binEl.className='bin';
+ binEl.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>Discard';
+ well.appendChild(binEl);
+ garbageEl=document.createElement('div');garbageEl.className='garbage';well.appendChild(garbageEl);
+ pieceEl=document.createElement('div');pieceEl.className='piece kr';pieceEl.innerHTML='<span class="g"></span><span class="tag"></span>';well.appendChild(pieceEl);
+ size();
+}
+function size(){
+ if(!S.word)return;
+ const fine=matchMedia('(hover:hover) and (pointer:fine)').matches;
+ const avail=$('#wrap').clientWidth;
+ G.colW=Math.min(116,Math.floor(avail/ncols()));
+ G.rowH=Math.round(Math.max(30,Math.min(48,(innerHeight-(fine?330:400))/(FALL_ROWS+2.2))));
+ G.cellS=Math.min(G.colW-10,Math.round(G.rowH*2.2));
+ G.tile=Math.min(G.colW-12,Math.round((G.rowH-6)*2));
+ const well=$('#well');well.style.width=G.colW*ncols()+'px';well.style.height=FALL_ROWS*G.rowH+G.cellS+10+'px';
+ lanes.forEach((l,i)=>{l.style.left=i*G.colW+'px';l.style.width=G.colW+'px'});
+ const top=fallRows()*G.rowH+5;
+ const place=(el,i)=>Object.assign(el.style,{left:(i*G.colW+(G.colW-G.cellS)/2)+'px',top:top+'px',width:G.cellS+'px',height:G.cellS+'px'});
+ const inner=G.cellS*.76;
+ S.cells.forEach((c,i)=>{place(c.el,i);
+  c.slots.forEach(s=>{const[x,y,w,h]=c.rect[s.role];Object.assign(s.el.style,{left:x+'%',top:y+'%',width:w+'%',height:h+'%',fontSize:Math.round(Math.min(w,h)/100*inner*.9)+'px'})});
+  c.el.querySelector('.glyph').style.fontSize=Math.round(G.cellS*.66)+'px'});
+ place(binEl,trashCol());
+ garbageEl.style.height=S.garbage*G.rowH+'px';
+ const t=G.tile;Object.assign(pieceEl.style,{width:t+'px',height:t+'px',borderRadius:Math.round(t*.24)+'px'});
+ pieceEl.querySelector('.g').style.fontSize=Math.round(t*.6)+'px';
+ drawPiece();
+}
+function renderCell(c){
+ c.slots.forEach(s=>{const sp=s.el.querySelector('span');if(s.filled&&!sp.textContent){sp.textContent=s.filled;sp.style.color=H.colorOf(s.filled);s.el.classList.add('filled')}});
+ if(c.done){const col=H.colorOf(c.slots[0].j);c.el.classList.add('done');c.el.style.borderColor=col;c.el.querySelector('.inner').hidden=true;
+  const g=c.el.querySelector('.glyph');g.textContent=c.ch;g.style.color=col;g.hidden=false}
+}
+function drawPiece(){
+ lanes.forEach((l,i)=>l.classList.toggle('on',!!S.piece&&S.piece.col===i));
+ if(!pieceEl)return;
+ const p=S.piece;pieceEl.hidden=!p;if(!p)return;
+ if(p.row>fallRows()-1)p.row=fallRows()-1;
+ const t=G.tile;
+ pieceEl.style.transform=`translate(${p.col*G.colW+(G.colW-t)/2}px,${(p.row+1)*G.rowH-3-t}px)`;
+}
+function paintPiece(spin){
+ const p=S.piece;if(!p||!pieceEl)return;
+ const g=pieceEl.querySelector('.g');g.textContent=p.ch;paintTile(pieceEl,p.ch);
+ if(spin){g.classList.remove('spin');void g.offsetWidth;g.classList.add('spin')}
+ pieceEl.className='piece kr '+(p.kind==='C'?'cons '+p.mode:'vow');
+ pieceEl.querySelector('.tag').textContent=p.kind==='C'?(p.mode==='init'?'first':'final'):'';
+}
+function renderNext(){
+ const box=$('#next');box.innerHTML='';
+ S.queue.slice(0,2).forEach(p=>{const d=document.createElement('div');d.className='mini kr';d.textContent=p.ch;paintTile(d,p.ch);box.appendChild(d)});
+}
+function spawn(){
+ while(S.queue.length<2)S.queue.push(gen());
+ S.piece=S.queue.shift();S.queue.push(gen());
+ S.piece.col=Math.floor((S.word.ko.length-1)/2);
+ S.piece.row=Math.min(fallRows()-1,Math.max(0,Math.ceil((G.tile+3)/G.rowH)-1));
+ paintPiece();drawPiece();renderNext();
+}
+
+/* ---------- rules ---------- */
+function msg(t,tone){const m=$('#msg');m.textContent=t;m.className='msg'+(tone?' '+tone:'')}
+function slotFor(c,p){
+ if(p.kind==='V')return c.slots.find(s=>s.role===(H.VERT.has(p.ch)?'jungV':'jungH'))||null;
+ if(p.mode==='init')return c.slots.find(s=>s.role==='cho')||null;
+ return c.slots.find(s=>s.role.startsWith('jong')&&!s.filled)||c.slots.find(s=>s.role.startsWith('jong'))||null;
+}
+function land(){
+ const p=S.piece;S.piece=null;drawPiece();
+ if(p.col===trashCol()){
+  SFX.click();binEl.classList.add('flash');setTimeout(()=>binEl.classList.remove('flash'),250);
+  if(!p.base){S.score+=25;msg(`${p.ch} was a decoy. +25`,'good')}else msg(`Discarded ${p.ch}. It will come back.`);
+ }else{
+  const c=S.cells[p.col],s=slotFor(c,p);
+  if(!c.done&&s&&!s.filled&&s.j===p.ch){
+   s.filled=p.ch;S.score+=10;SFX.set();
+   if(c.slots.every(x=>x.filled)){c.done=true;S.score+=30;renderCell(c);
+    if(S.cells.every(x=>x.done)){wordDone();hud();return}
+    msg(`${c.ch} is complete.`,'good');
+   }else{renderCell(c);msg('')}
+  }else wrong(c,p,s);
+ }
+ hud();
+ if(S.running&&!S.over&&!S.lock)spawn();
+}
+function wrong(c,p,s){
+ const need=r=>c.slots.find(x=>x.role===r&&!x.filled);
+ const jongs=c.slots.filter(x=>x.role.startsWith('jong'));
+ let why;
+ if(c.done)why='That block is already finished.';
+ else if(!p.base&&!c.slots.some(x=>x.j===p.ch))why=`${p.ch} is a decoy. Send decoys to Discard.`;
+ else if(p.kind==='V'){
+  const fam=H.family(p.ch)||[];
+  if(c.slots.some(x=>x.role.startsWith('jung')&&!x.filled&&fam.includes(x.j)))why=`Right vowel, wrong direction. Rotate (↑) to turn ${p.ch}.`;
+  else if(s&&s.filled)why='That vowel spot is already filled.';
+  else why=`${p.ch} doesn't belong in this block.`;
+ }else if(p.mode==='init'){
+  if(jongs.some(x=>!x.filled&&x.j===p.ch))why=`${p.ch} sits at the bottom of this block. Rotate (↑) to make it a final consonant.`;
+  else if(s&&s.filled)why='The first consonant is already in place.';
+  else why=`${p.ch} doesn't start this block.`;
+ }else{
+  if(!jongs.length)why='This block has no final consonant.';
+  else if(need('cho')&&need('cho').j===p.ch)why=`${p.ch} starts this block. Rotate (↑) to make it a first consonant.`;
+  else if(jongs.length===2&&!jongs[0].filled&&jongs[1].j===p.ch)why=`This double final is ${jongs[0].j} then ${jongs[1].j}. Place ${jongs[0].j} first.`;
+  else if(s&&s.filled)why='The final consonant is already in place.';
+  else why=`${p.ch} isn't the final consonant here.`;
+ }
+ msg(why,'bad');SFX.miss();
+ c.el.classList.remove('err');void c.el.offsetWidth;c.el.classList.add('err');setTimeout(()=>c.el.classList.remove('err'),400);
+ S.garbage++;size();
+ if(S.garbage>=MAXG)gameOver();
+}
+function promo(where,text){return `<a class="promo" href="https://korean-fidget.vercel.app/?ref=moa-${where}" target="_blank" rel="noopener"><div class="tile fid kr">가</div><span>${text} <b>Open Korean Fidget</b></span></a>`}
+function coloredWord(w){return [...w].map(ch=>`<span style="color:${H.colorOf(H.decompose(ch).cho)}">${ch}</span>`).join('')}
+function wordDone(){
+ S.lock=true;S.cleared++;S.score+=100*S.word.ko.length*level();
+ S.garbage=Math.max(0,S.garbage-1);
+ const w=S.word;S.collected.unshift(w);renderWords();
+ SFX.done();setTimeout(()=>SFX.speak(w.ko),260);msg('');
+ const ov=$('#overlay');
+ ov.innerHTML=`<div class="dlg clear"><span class="eyebrow">Word built</span><div class="ko kr">${coloredWord(w.ko)}</div><div class="rr">${w.rr}</div><div class="en" dir="auto">${meaningOf(w.ko)}</div>${w.pron?`<div class="snd">Sounds like [${w.pron}]</div>`:''}
+ ${S.cleared%3===0?promo('word',`Now write <span class="kr">${w.ko}</span> yourself, then try any word you like.`):''}
+ <div class="btns"><button class="ghost" id="sayAgain">Listen again</button><button class="primary" id="nextw">Next word</button></div></div>`;
+ ov.hidden=false;
+ $('#sayAgain').onclick=()=>SFX.speak(w.ko);
+ $('#nextw').onclick=nextWord;$('#nextw').focus({preventScroll:true});
+}
+function nextWord(){
+ if(!S.lock||S.over)return;
+ $('#overlay').hidden=true;S.lock=false;newWord();size();hud();S.last=performance.now();
+ setTimeout(()=>SFX.speak(S.word.ko),250);
+}
+function gameOver(){
+ S.over=true;S.running=false;S.piece=null;drawPiece();
+ const ov=$('#overlay');
+ ov.innerHTML=`<div class="dlg"><h2>The floor reached the top</h2><p>Score ${S.score} · ${S.cleared} word${S.cleared===1?'':'s'} built · level ${level()}</p>${S.cleared?promo('over',`You built ${S.cleared} word${S.cleared===1?'':'s'}. Keep going by writing your own.`):''}<button class="primary" id="again">Play again</button></div>`;
+ ov.hidden=false;$('#again').onclick=restart;
+}
+function hud(){
+ $('#score').textContent=S.score;$('#level').textContent=level();$('#count').textContent=S.cleared;
+ $('#pips').innerHTML=Array.from({length:MAXG},(_,i)=>`<i class="${i<S.garbage?'on':''}"></i>`).join('');
+ const b=$('#pauseBtn');b.disabled=!S.running||S.lock;b.setAttribute('aria-label',S.paused?'Resume':'Pause');
+ b.innerHTML=S.paused?'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>':'<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>';
+}
+function renderWords(){
+ $('#wordsEmpty').hidden=S.collected.length>0;
+ $('#words').innerHTML=S.collected.map((w,i)=>`<li><button data-i="${i}"><span class="k kr">${coloredWord(w.ko)}</span><span class="e" dir="auto">${meaningOf(w.ko)}</span><span class="r">${w.rr}</span></button></li>`).join('');
+}
+$('#words').addEventListener('click',e=>{const b=e.target.closest('button');if(b)SFX.speak(S.collected[+b.dataset.i].ko)});
+
+/* ---------- input ---------- */
+function act(a){
+ if(!S.running||S.paused||S.lock||!S.piece)return;
+ const p=S.piece;
+ if(a==='left'){if(p.col>0){p.col--;SFX.click()}}
+ else if(a==='right'){if(p.col<ncols()-1){p.col++;SFX.click()}}
+ else if(a==='rot'){if(p.kind==='C')p.mode=p.mode==='init'?'final':'init';else p.ch=H.rotate(p.ch);SFX.click();paintPiece(p.kind==='V')}
+ else if(a==='down'){S.score++;step();hud();return}
+ else if(a==='discard'){p.col=trashCol();p.row=fallRows()-1;drawPiece();land();return}
+ else if(a==='drop'){S.score+=2*(fallRows()-1-p.row);p.row=fallRows()-1;drawPiece();land();return}
+ drawPiece();
+}
+function step(){const p=S.piece;if(!p)return;if(p.row<fallRows()-1){p.row++;drawPiece()}else land();S.last=performance.now()}
+addEventListener('keydown',e=>{
+ const k=e.key;
+ if(!$('#sheet').hidden){if(k==='Escape')closeSet();return}
+ if(S.lock&&!$('#overlay').hidden&&(k==='Enter'||k===' ')){e.preventDefault();nextWord();return}
+ if(k==='p'||k==='P'){togglePause();return}
+ const map={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'rot',x:'rot',z:'rot',ArrowDown:'down',' ':'drop',c:'discard',C:'discard'};
+ if(map[k]&&S.running){e.preventDefault();act(map[k])}
+});
+$('#pad').addEventListener('pointerdown',e=>{const b=e.target.closest('button');if(b){e.preventDefault();act(b.dataset.a)}});
+$('#listen').onclick=()=>S.word&&SFX.speak(S.word.ko);
+document.addEventListener('pointerdown',()=>SFX.keepAlive(),{once:true});
+
+function togglePause(force){
+ if(!S.running||S.lock)return;
+ S.paused=force!==undefined?force:!S.paused;
+ const ov=$('#overlay');
+ if(S.paused){ov.innerHTML='<div class="dlg"><h2>Paused</h2><button class="primary" id="resume">Resume</button></div>';ov.hidden=false;$('#resume').onclick=()=>togglePause(false)}
+ else{ov.hidden=true;S.last=performance.now()}
+ hud();
+}
+$('#pauseBtn').onclick=()=>togglePause();
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&S.running&&!S.paused)togglePause(true)});
+addEventListener('resize',()=>size());
+
+/* ---------- options ---------- */
+function openSet(){if(S.running&&!S.paused&&!S.lock)togglePause(true);$('#sheet').hidden=false;$('#scrim').hidden=false}
+function closeSet(){$('#sheet').hidden=true;$('#scrim').hidden=true}
+$('#setBtn').onclick=openSet;$('#setClose').onclick=closeSet;$('#scrim').onclick=closeSet;
+$('#opt-lang').innerHTML=LANGS.map(([c,n])=>`<option value="${c}">${n}</option>`).join('');$('#opt-lang').value=lang;
+$('#opt-lang').onchange=e=>{lang=e.target.value;store.set('moa-lang',lang);showTarget();renderWords()};
+$('#opt-rr').onchange=e=>{$('#rr').hidden=!e.target.checked};
+$('#opt-sfx').onchange=e=>{SFX.on=e.target.checked;if(SFX.on)SFX.click()};
+function fillVoices(){
+ const vs=SFX.loadVoices(store.get('moa-voice'));const sel=$('#opt-voice');
+ sel.innerHTML=vs.length?vs.map(v=>`<option value="${v.name}">${v.name}</option>`).join(''):'<option value="">Device default</option>';
+ if(SFX.voice)sel.value=SFX.voice.name;
+}
+if('speechSynthesis' in window){fillVoices();speechSynthesis.onvoiceschanged=fillVoices}
+$('#opt-voice').onchange=e=>{SFX.useVoice(e.target.value);store.set('moa-voice',e.target.value);SFX.speak(S.word?S.word.ko:'안녕하세요')};
+$('#testVoice').onclick=()=>SFX.speak(S.word?S.word.ko:'안녕하세요');
+
+function loop(t){
+ if(S.running&&!S.paused&&!S.lock&&S.piece&&t-S.last>fallMs()){S.last=t;step()}
+ requestAnimationFrame(loop);
+}
+function start(){$('#overlay').hidden=true;S.running=true;S.last=performance.now();SFX.click();SFX.speak(S.word.ko);msg('Listen, then build the word.');hud()}
+function restart(){
+ Object.assign(S,{running:false,paused:false,over:false,lock:false,score:0,cleared:0,garbage:0,word:null,collected:[]});
+ S.used.clear();renderWords();newWord();hud();start();
+}
+function intro(){
+ const ov=$('#overlay');
+ ov.innerHTML=`<div class="dlg"><h2>Hear it. Build it.</h2><p>A Korean word plays. Steer the falling letters into its blocks.</p>
+ <ul><li>Each letter's shape decides where it sits in the block.</li>
+ <li>Rotate (↻) turns a vowel ㅏ→ㅜ→ㅓ→ㅗ, or moves a consonant between first and final.</li>
+ <li>Send decoys to Discard. Every mistake raises the floor.</li></ul>
+ <button class="primary" id="go">Start</button></div>`;
+ ov.hidden=false;$('#go').onclick=start;
+}
+if(!POOL.length){$('#msg').textContent='The word list did not load.';}
+else{newWord();hud();renderWords();intro();requestAnimationFrame(loop)}
+</script>
+
+</body></html>
